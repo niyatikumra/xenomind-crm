@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
 });
 
 // Customers
@@ -24,8 +24,9 @@ export const sendChatMessage = (message, history) =>
 
 // SSE Stream
 export const streamCampaign = (campaignId, onUpdate) => {
+  const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
   const es = new EventSource(
-    `http://localhost:5000/api/campaigns/${campaignId}/stream`
+    `${baseUrl}/campaigns/${campaignId}/stream`
   );
   es.onmessage = (e) => {
     const data = JSON.parse(e.data);
