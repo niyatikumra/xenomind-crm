@@ -25,6 +25,7 @@ function WarRoom() {
     if (campaignId) {
       fetchCampaign(campaignId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [campaignId]);
 
   useEffect(() => {
