@@ -39,7 +39,7 @@ CURRENT DATA:
 
 RECENT CAMPAIGNS: {', '.join(campaigns_info) if campaigns_info else 'None yet'}
 
-AVAILABLE SEGMENTS: vip, slipped_vip, churned, at_risk, new, loyal
+AVAILABLE SEGMENTS: vip, slipped_vip, churned, at_risk, new, loyal, all_customers (use "all_customers" when user wants to reach everyone)
 AVAILABLE CHANNELS: whatsapp, sms, email, rcs
 
 YOUR JOB:
