@@ -116,35 +116,6 @@ def chat():
 
     except Exception as e:
         print(f"OpenRouter API error: {e}")
-        return jsonify({'error': str(e)}), 500
-
-@chat_bp.route('/campaigns/from-chat', methods=['POST'])
-def create_campaign_from_chat():
-    data = request.json
-    try:
-        campaign = Campaign(
-            name=data['campaign_name'],
-            segment_tag=data['segment_tag'],
-            message=data['message'],
-            channel=data.get('channel', 'whatsapp'),
-            status='draft'
-        )
-        db.session.add(campaign)
-        db.session.commit()
-        return jsonify({
-            'status': 'created',
-            'campaign_id': campaign.id,
-            'campaign': {
-                'id': campaign.id,
-                'name': campaign.name,
-                'segment_tag': campaign.segment_tag,
-                'message': campaign.message,
-                'channel': campaign.channel,
-                'status': campaign.status
-            }
-        }), 201
-    except Exception as e:
-        print(f"OpenRouter API error: {e}")
         
         # Fallback response agar API fail ho jaye
         msg_lower = user_message.lower()
@@ -180,3 +151,31 @@ def create_campaign_from_chat():
             'response': f"I'm running on backup mode right now (high demand), but here's a campaign based on your request:\n\n{json.dumps(fallback_json, indent=2)}",
             'campaign_data': fallback_json
         })
+
+@chat_bp.route('/campaigns/from-chat', methods=['POST'])
+def create_campaign_from_chat():
+    data = request.json
+    try:
+        campaign = Campaign(
+            name=data['campaign_name'],
+            segment_tag=data['segment_tag'],
+            message=data['message'],
+            channel=data.get('channel', 'whatsapp'),
+            status='draft'
+        )
+        db.session.add(campaign)
+        db.session.commit()
+        return jsonify({
+            'status': 'created',
+            'campaign_id': campaign.id,
+            'campaign': {
+                'id': campaign.id,
+                'name': campaign.name,
+                'segment_tag': campaign.segment_tag,
+                'message': campaign.message,
+                'channel': campaign.channel,
+                'status': campaign.status
+            }
+        }), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
