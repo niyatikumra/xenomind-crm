@@ -94,7 +94,8 @@ def chat():
         result = response.json()
         
         if 'error' in result:
-            return jsonify({'error': result['error']}), 500
+            print(f"OpenRouter returned error: {result['error']}")
+            raise Exception(str(result['error']))
 
         ai_response = result['choices'][0]['message']['content']
 
