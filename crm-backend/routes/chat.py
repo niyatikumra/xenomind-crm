@@ -86,7 +86,7 @@ def chat():
                 "Content-Type": "application/json"
             },
             data=json.dumps({
-                "model": "openai/gpt-oss-20b:free",
+                "model": "meta-llama/llama-3.2-3b-instruct:free",
                 "messages": messages
             })
         )
