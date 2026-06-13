@@ -55,7 +55,7 @@ When user asks to create/send a campaign, ALWAYS respond with a JSON block like 
 }}
 
 For general questions, respond naturally without JSON.
-For campaign requests, ALWAYS include the JSON block.
+For campaign requests, ALWAYS include exactly ONE JSON block (not multiple). If the user's request needs multiple campaigns, pick the most impactful one first and mention they can create the others as follow-ups.
 Keep responses concise and actionable.
 You understand Indian fashion market context."""
 
@@ -100,12 +100,28 @@ def chat():
         ai_response = result['choices'][0]['message']['content']
 
         # Check if campaign intent detected
+        # Check if campaign intent detected
         campaign_data = None
         if '"intent": "create_campaign"' in ai_response:
             try:
-                json_match = re.search(r'\{[\s\S]*"intent"[\s\S]*\}', ai_response)
-                if json_match:
-                    campaign_data = json.loads(json_match.group())
+                # Pehle ```json blocks dhundo
+                json_blocks = re.findall(r'```json\s*([\s\S]*?)```', ai_response)
+                if json_blocks:
+                    # Sirf pehla valid campaign JSON lo
+                    for block in json_blocks:
+                        try:
+                            parsed = json.loads(block.strip())
+                            if parsed.get('intent') == 'create_campaign':
+                                campaign_data = parsed
+                                break
+                        except:
+                            continue
+                
+                # Fallback - agar code blocks nahi mile
+                if not campaign_data:
+                    json_match = re.search(r'\{[^{}]*"intent"\s*:\s*"create_campaign"[^{}]*\}', ai_response)
+                    if json_match:
+                        campaign_data = json.loads(json_match.group())
             except:
                 pass
 
