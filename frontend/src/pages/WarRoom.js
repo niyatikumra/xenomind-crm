@@ -34,6 +34,12 @@ function WarRoom() {
     }
   }, [eventLog]);
 
+  useEffect(() => {
+    return () => {
+      if (sseRef.current) clearInterval(sseRef.current);
+    };
+  }, []);
+
   const fetchCampaigns = async () => {
     try {
       const res = await getCampaigns();
@@ -57,25 +63,26 @@ function WarRoom() {
   };
 
   const startSSE = (id) => {
-    if (sseRef.current) sseRef.current.close();
-    sseRef.current = streamCampaign(id, (data) => {
-      if (data.type === 'stats_update') {
-        setStats(data.stats);
-        if (data.event) {
-          setEventLog(prev => [{
-            ...data.event,
-            id: Date.now(),
-          }, ...prev].slice(0, 50));
-
-          // Low open rate check
-          if (data.stats.total > 10 &&
-            data.stats.opened / data.stats.total < 0.2 &&
-            data.stats.delivered > 5) {
-            setRetryPrompt(true);
+    if (sseRef.current) clearInterval(sseRef.current);
+    
+    sseRef.current = setInterval(async () => {
+      try {
+        const res = await getCampaign(id);
+        const newStats = res.data.stats;
+        setStats(prevStats => {
+          if (JSON.stringify(prevStats) !== JSON.stringify(newStats)) {
+            if (newStats.total > 10 &&
+              newStats.opened / newStats.total < 0.2 &&
+              newStats.delivered > 5) {
+              setRetryPrompt(true);
+            }
           }
-        }
+          return newStats;
+        });
+      } catch (err) {
+        console.error(err);
       }
-    });
+    }, 3000);
   };
 
   const handleFire = async (id) => {
