@@ -86,7 +86,7 @@ def chat():
                 "Content-Type": "application/json"
             },
             data=json.dumps({
-                "model": "meta-llama/llama-3.2-3b-instruct:free",
+                "model": "google/gemma-2-9b-it:free",
                 "messages": messages
             })
         )
