@@ -162,7 +162,7 @@ def fire_campaign(campaign_id):
                 'campaign_id': campaign_id,
                 'communications': communications,
                 'callback_url': f"{callback_url}/api/receipts"
-            }, timeout=5)
+            }, timeout=60)
         except Exception as e:
             print(f"Channel stub error: {e}")
 
