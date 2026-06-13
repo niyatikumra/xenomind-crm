@@ -86,7 +86,7 @@ def chat():
                 "Content-Type": "application/json"
             },
             data=json.dumps({
-                "model": "google/gemma-2-9b-it:free",
+                "model": "openrouter/auto",
                 "messages": messages
             })
         )
