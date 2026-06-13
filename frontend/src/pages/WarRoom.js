@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getCampaigns, getCampaign, fireCampaign, streamCampaign } from '../services/api';
+import { getCampaigns, getCampaign, fireCampaign} from '../services/api';
 import CampaignCard from '../components/CampaignCard';
 
 function WarRoom() {
