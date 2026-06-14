@@ -104,10 +104,9 @@ def chat():
         campaign_data = None
         if '"intent": "create_campaign"' in ai_response:
             try:
-                # Pehle ```json blocks dhundo
+                # Method 1: ```json blocks
                 json_blocks = re.findall(r'```json\s*([\s\S]*?)```', ai_response)
                 if json_blocks:
-                    # Sirf pehla valid campaign JSON lo
                     for block in json_blocks:
                         try:
                             parsed = json.loads(block.strip())
@@ -116,14 +115,22 @@ def chat():
                                 break
                         except:
                             continue
-                
-                # Fallback - agar code blocks nahi mile
+
+                # Method 2: Raw JSON block (no backticks)
                 if not campaign_data:
-                    json_match = re.search(r'\{[^{}]*"intent"\s*:\s*"create_campaign"[^{}]*\}', ai_response)
-                    if json_match:
-                        campaign_data = json.loads(json_match.group())
+                    all_jsons = re.finditer(r'\{[\s\S]*?"intent"[\s\S]*?\}', ai_response)
+                    for match in all_jsons:
+                        try:
+                            parsed = json.loads(match.group())
+                            if parsed.get('intent') == 'create_campaign':
+                                campaign_data = parsed
+                                break
+                        except:
+                            continue
             except:
                 pass
+                # Fallback - agar code blocks nahi mile
+                
 
         return jsonify({
             'response': ai_response,
