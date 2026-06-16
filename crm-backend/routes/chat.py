@@ -55,7 +55,7 @@ When user asks to create/send a campaign, ALWAYS respond with a JSON block like 
 }}
 
 For general questions, respond naturally without JSON.
-For campaign requests, ALWAYS include exactly ONE JSON block (not multiple). If the user's request needs multiple campaigns, pick the most impactful one first and mention they can create the others as follow-ups.
+For campaign requests, ALWAYS include exactly ONE JSON block wrapped in ```json and ``` tags. Never output raw JSON without backtick tags. If multiple campaigns needed, pick most impactful one only.
 Keep responses concise and actionable.
 You understand Indian fashion market context."""
 
