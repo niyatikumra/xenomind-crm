@@ -44,7 +44,18 @@ function Chat() {
     try {
       const res = await sendChatMessage(userMsg, history);
       const aiResponse = res.data.response;
-      const campaignData = res.data.campaign_data;
+      let campaignData = res.data.campaign_data;
+
+if (!campaignData && aiResponse.includes('"intent": "create_campaign"')) {
+  try {
+    const match = aiResponse.match(/\{[\s\S]*?"intent"[\s\S]*?\}/);
+    if (match) {
+      campaignData = JSON.parse(match[0]);
+    }
+  } catch (e) {
+    console.log('Frontend parse failed:', e);
+  }
+}
 
       setMessages(prev => [...prev, {
         role: 'assistant',
